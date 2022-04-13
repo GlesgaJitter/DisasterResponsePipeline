@@ -27,7 +27,7 @@ def tokenize(text):
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
-df = pd.read_sql_table('messages_cleaned', engine)
+df = pd.read_sql_table('df', engine)
 
 # load model
 model = joblib.load("../models/model_file.pkl")
@@ -43,10 +43,13 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    weather_counts = df[['floods','storm','fire','earthquake','cold','other_weather']].sum()
+    weather_names = list(weather_counts.index)
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
-        {
+        { # genre graph
             'data': [
                 Bar(
                     x=genre_names,
@@ -61,6 +64,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        { # weather type graph
+            'data': [
+                Bar(
+                    x=weather_names,
+                    y=weather_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Weather Types',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Weather Type"
                 }
             }
         }
