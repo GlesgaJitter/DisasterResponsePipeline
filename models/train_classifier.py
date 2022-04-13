@@ -35,6 +35,9 @@ def load_data(database_filepath):
     df = pd.read_sql_table('messages_cleaned', 'sqlite:///'+database_filepath)
     X = df.message.values
     y = df.drop(columns=['id','message','original','genre'])
+    catgeory_names = y.columns.tolist()
+    
+    return X, y, catgeory_names
 
 
 def tokenize(text):
