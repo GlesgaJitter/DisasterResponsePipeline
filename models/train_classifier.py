@@ -31,8 +31,8 @@ import sys
 
 def load_data(database_filepath):
     # load data from database
-    engine = create_engine('sqlite:///messages_cleaned.db')
-    df = pd.read_sql_table('messages_cleaned', 'sqlite:///messages_cleaned.db')
+    engine = create_engine('sqlite:///'+database_filepath)
+    df = pd.read_sql_table('messages_cleaned', 'sqlite:///'+database_filepath)
     X = df.message.values
     y = df.drop(columns=['id','message','original','genre'])
 
