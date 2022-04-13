@@ -6,11 +6,19 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    INPUT: 
+    - messages_filepath: string - location of messages file
+    - categories_filepath: string - location of categories file
+    
+    OUTPUT:
+    - df: DataFrame - frame of joined (on message id) messages and categories
+    """
     # load messages dataset
-    messages = pd.read_csv("disaster_messages.csv")
+    messages = pd.read_csv(messages_filepath)
 
     # load categories dataset
-    categories = pd.read_csv("disaster_categories.csv")
+    categories = pd.read_csv(categories_filepath)
 
     # merge datasets
     df = messages.merge(categories, how='inner', left_on='id', right_on='id')
@@ -18,6 +26,15 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    """
+    INPUT:
+    - df: DataFrame of messages and associated categories
+    
+    OUTPUT:
+    - df: DataFrame of messages and categories in separate columns
+    where '1' or '0' indicate a message does or does not fall into 
+    a category respectively
+    """
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';',expand=True)
 
@@ -51,6 +68,14 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+    """
+    INPUT:
+    - df: DataFrame of messages and associated categories
+    - database_filename: string - name given to database. Provided by user
+    
+    OUTPUT: 
+    - None - function creates a database file
+    """
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('messages_cleaned', engine, index=False, if_exists='replace')
 
