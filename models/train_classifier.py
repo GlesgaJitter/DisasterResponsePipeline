@@ -30,6 +30,15 @@ import sys
 
 
 def load_data(database_filepath):
+    """
+    INPUT:
+    - database_filepath: string - location of database to be loaded
+    
+    OUTPUT:
+    - X: List of messages extracted from database
+    - y: DataFrame of category columns
+    - category_names: list of names of category columns
+    """
     # load data from database
     engine = create_engine('sqlite:///'+database_filepath)
     df = pd.read_sql_table('messages_cleaned', 'sqlite:///'+database_filepath)
@@ -65,6 +74,13 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    INPUT:
+    - None
+    
+    OUTPUT: 
+    - cv: GridSearch over machine learning pipeline
+    """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -84,12 +100,30 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """
+    INPUT: 
+    - model: machine learning model
+    - X_test: partition of messages to be used to test ML model
+    - Y_test: partition of categories to be used to test ML model
+    - category_names: list of category column names
+    
+    OUTPUT:
+    - None - function prints classification report to evaluate ML model
+    """
     # predict on test data
     y_pred = pipeline.predict(X_test)
 
     print(classification_report(y_test, y_pred, target_names=y_test.columns))
 
 def save_model(model, model_filepath):
+    """
+    INPUT: 
+    - model: ML model
+    - model_filepath: string - pickle file name for ML model. Provided by user
+    
+    OUTPUT:
+    - None: function creates a .pkl to save the ML model
+    """
     with open('model_file.pkl', 'wb') as model_file:
         pickle.dump(pipeline, model_file)
 
