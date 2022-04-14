@@ -38,6 +38,9 @@ def load_data(database_filepath):
     - X: List of messages extracted from database
     - y: DataFrame of category columns
     - category_names: list of names of category columns
+    
+    This function loads the cleaned database (saved in ../data/process_data.py) 
+    and splits it into the two outputs.
     """
     # load data from database
     engine = create_engine('sqlite:///'+database_filepath)
@@ -50,11 +53,13 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-
     """
     # INPUT: text - string of text to be tokenised
 
     # OUTPUT: clean_tokens - list of tokenised words
+    
+    This functions takes messages as sentnces and returns a 
+    list of cleaned and lemmatised tokens. 
     """
 
     # make lower case and remove non-alphanumeric characters
@@ -80,6 +85,9 @@ def build_model():
     
     OUTPUT: 
     - cv: GridSearch over machine learning pipeline
+    
+    This function builds the ML model using the classifier
+    - ExtraTreesClassifier
     """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -109,6 +117,9 @@ def evaluate_model(model, X_test, Y_test, category_names):
     
     OUTPUT:
     - None - function prints classification report to evaluate ML model
+    
+    This function evaluates the performance of the ML model and prints a 
+    classification report
     """
     # predict on test data
     y_pred = pipeline.predict(X_test)
@@ -123,6 +134,8 @@ def save_model(model, model_filepath):
     
     OUTPUT:
     - None: function creates a .pkl to save the ML model
+    
+    This function saves the machine learning model as a pickle file
     """
     with open('model_file.pkl', 'wb') as model_file:
         pickle.dump(pipeline, model_file)
