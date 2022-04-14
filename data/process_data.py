@@ -13,6 +13,8 @@ def load_data(messages_filepath, categories_filepath):
     
     OUTPUT:
     - df: DataFrame - frame of joined (on message id) messages and categories
+    
+    This function loads and merges the messages and categories datasets.
     """
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
@@ -34,6 +36,10 @@ def clean_data(df):
     - df: DataFrame of messages and categories in separate columns
     where '1' or '0' indicate a message does or does not fall into 
     a category respectively
+    
+    This function cleans the categories column of the merged DataFrame. 
+    The categories column is split into 36 separate columns and fills these
+    new columns with '0' or '1' to indicate a message falls into a category.
     """
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';',expand=True)
@@ -75,12 +81,28 @@ def save_data(df, database_filename):
     
     OUTPUT: 
     - None - function creates a database file
+    
+    This function saves the cleaned DataFrame as an SQL database. 
     """
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('messages_cleaned', engine, index=False, if_exists='replace')
 
 
 def main():
+    """
+    INPUT: 
+    - None: this main function takes no inputs
+    
+    OUTPUT:
+    - None: this main function returns no outputs
+    
+    This function takes user inputs and runs the above functions to:
+    - Load data
+    - Clean data
+    - Save data
+    or
+    - print a user-input error
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
